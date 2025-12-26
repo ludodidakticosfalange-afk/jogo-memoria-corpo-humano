@@ -3,14 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jogo da Memória Educativo — Operação Corpo Humano</title>
+  <title>Jogo da Memória Educativo — Memória do Simão – Corpo Humano</title>
   <style>
     :root {
       --bg-overlay: rgba(15, 23, 42, 0.85);
-      --card-back: #1e40af;
       --txt: #f8fafc;
       --accent: #22c55e;
-      --error: #ef4444;
       --gold: #d4af37;
       --radius: 16px;
     }
@@ -20,7 +18,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
+      background: linear-gradient(var(--bg-overlay), var(--bg-overlay)),
                   url('fundo.png');
       background-size: cover;
       background-position: center;
@@ -34,12 +32,12 @@
     #menuScreen, #gameScreen, #certScreen {
       display: flex; flex-direction: column; align-items: center;
       width: 100%; max-width: 800px;
+      min-height: 100vh;
     }
-
     #gameScreen, #certScreen { display: none; }
 
     h1 { font-size: 32px; margin: 10px 0; color: #60a5fa; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    
+
     /* Registration Box */
     .registration-box {
       background: rgba(255, 255, 255, 0.1);
@@ -47,7 +45,7 @@
       padding: 25px; border-radius: 20px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       width: 100%; max-width: 450px;
-      margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
@@ -69,7 +67,16 @@
       border-radius: 20px; padding: 20px; cursor: pointer; transition: 0.3s; text-align: center;
     }
     .phase-card:hover { transform: translateY(-5px); border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); }
-    .phase-icon { font-size: 40px; display: block; margin-bottom: 10px; }
+
+    .fase-ancora{
+      font-size: 0.9rem;
+      color: #e0e0e0;
+      opacity: 0.85;
+      max-width: 900px;
+      margin: 6px auto 14px;
+      text-align: center;
+      line-height: 1.4;
+    }
 
     /* Game UI */
     .grid {
@@ -89,18 +96,23 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       border: 2px solid rgba(255,255,255,0.1);
     }
-    .back {
-  background-image: url('capa-carta-corpo.png');
-  background-size: cover;
-  background-position: center calc(56% + 40px);
-}
 
+    .back {
+      background-image: url('capa-carta-corpo.png');
+      background-size: cover;
+      background-position: center calc(56% + 40px);
+    }
 
     .front { background: #ffffff; transform: rotateY(180deg); color: #1e293b; }
-    
-    .card-img { font-size: 40px; }
-    .card-label { font-size: 10px; font-weight: 900; margin-top: 5px; text-transform: uppercase; color: #1e40af; }
 
+    .card-photo{
+      width: 78%;
+      height: auto;
+      max-height: 70%;
+      object-fit: contain;
+      display: block;
+    }
+    .card-label { font-size: 10px; font-weight: 900; margin-top: 5px; text-transform: uppercase; color: #1e40af; }
     .card.matched .inner .front { border: 4px solid var(--accent); background: #f0fdf4; }
 
     /* Sound Control */
@@ -137,98 +149,201 @@
     .cert-title { font-size: 36px; color: #1e3a8a; font-weight: bold; margin-bottom: 10px; }
     .cert-name { font-size: 32px; font-weight: bold; color: #1e40af; border-bottom: 2px solid #cbd5e1; display: inline-block; min-width: 250px; margin: 20px 0; }
 
-    @media print {
-      body * { visibility: hidden; }
-      #certScreen, #certScreen * { visibility: visible; }
-      #certScreen { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
-      .no-print { display: none; }
+    /* ===== AJUSTES PARA CELULAR E TABLET ===== */
+    @media (max-width: 768px) {
+      body { padding: 8px; }
+      .grid { gap: 8px; }
+      .card-label { font-size: 9px; }
+      .back { background-size: contain; background-position: center center; background-color: #0f172a; }
     }
-.fase-ancora{
-  font-size: 0.9rem;
-  color: #e0e0e0;
-  opacity: 0.85;
-  max-width: 900px;
-  margin: 6px auto 14px;
-  text-align: center;
-  line-height: 1.4;
-}
 
+    .phase-icon-img {
+      width: 64px;
+      height: auto;
+      object-fit: contain;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 200, 0.9));
+      animation: brilhoSuave 2s infinite alternate;
+      background: radial-gradient(circle, rgba(255,255,255,0.35) 60%, rgba(255,255,255,0) 70%);
+      padding: 6px;
+      border-radius: 50%;
+    }
 
-#menuScreen, #gameScreen, #certScreen {
-  min-height: 100vh;
-}
-/* ===== AJUSTES PARA CELULAR E TABLET ===== */
-@media (max-width: 768px) {
-  body {
-    padding: 8px; /* evita cortes nas bordas */
-  }
+    @keyframes brilhoSuave {
+      from { filter: drop-shadow(0 0 6px rgba(255, 255, 200, 0.6)); }
+      to   { filter: drop-shadow(0 0 14px rgba(255, 255, 200, 1)); }
+    }
 
-  .grid {
-    gap: 8px; /* cartas mais próximas */
-  }
+    /* =========================
+       PRINT AREA (CARTAS)
+       ========================= */
+    #printArea{ display:none; background:#fff; color:#000; }
 
-  .card-label {
-    font-size: 9px; /* texto legível sem estourar */
-  }
-}
-/* ===== AJUSTE DE CAPA DAS CARTAS EM FULLSCREEN (CELULAR) ===== */
-@media (max-width: 768px) {
-  .back {
-    background-size: contain;   /* NÃO corta o boneco */
-    background-position: center center;
-    background-color: #0f172a;  /* fundo neutro Falange */
-  }
-}
+    /* =========================
+       PRINT MODES (CARTAS vs CERTIFICADO)
+       ========================= */
+    @media print {
+      body * { visibility: hidden !important; }
 
+      /* --- MODO: CARTAS --- */
+      body.print-mode-cards #printArea,
+      body.print-mode-cards #printArea * {
+        visibility: visible !important;
+      }
+      body.print-mode-cards #printArea{
+        position:absolute;
+        left:0; top:0;
+        width:100%;
+        display:block !important;
+      }
+
+      /* --- MODO: CERTIFICADO --- */
+      body.print-mode-cert #certScreen,
+      body.print-mode-cert #certScreen *{
+        visibility: visible !important;
+      }
+      body.print-mode-cert #certScreen{
+        position:absolute;
+        left:0; top:0;
+        width:100%;
+        display:flex !important;
+        padding:0 !important;
+        margin:0 !important;
+      }
+
+      /* folha */
+      @page { size: A4; margin: 10mm; }
+
+      html, body{
+        margin:0 !important;
+        padding:0 !important;
+        background:#fff !important;
+      }
+
+      /* ===== CARTAS (A4) ===== */
+      .sheet { page-break-after: always; width:210mm; min-height:297mm; padding:10mm; box-sizing:border-box; background:#fff; }
+      .sheet:last-child { page-break-after: auto; }
+      .print-title{ font: 900 14pt/1.2 "Segoe UI", system-ui, sans-serif; margin: 0 0 8mm 0; color:#0f172a; }
+
+      .print-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 6mm; }
+
+      .print-card{
+        border: 2px solid #1e40af;
+        border-radius: 12px;
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-sizing:border-box;
+        background:#fff;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .print-card-front{
+        width:100%;
+        height:100%;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .print-card img{
+        width: 86%;
+        height: auto;
+        max-height: 78%;
+        object-fit: contain;
+      }
+
+      .print-card .lbl{
+        font: 900 10pt/1.1 "Segoe UI", system-ui, sans-serif;
+        text-transform: uppercase;
+        color:#1e40af;
+        margin-top: 3mm;
+        text-align:center;
+        padding: 0 2mm;
+      }
+
+      .print-back{
+        background:#0f172a;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      .print-back img{
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display:block;
+      }
+
+      /* ===== CERTIFICADO (A4) ===== */
+      body.print-mode-cert .certificate-container{
+        width: 190mm !important;            /* 210 - 2*10mm margens */
+        min-height: 277mm !important;       /* 297 - 2*10mm margens */
+        margin: 0 auto !important;
+        box-shadow: none !important;
+      }
+      body.print-mode-cert .no-print{ display:none !important; }
+    }
   </style>
 </head>
+
 <body>
 
   <!-- MENU -->
   <div id="menuScreen">
-    <h1>Operação Memória Humana</h1>
+    <h1>Memória do Simão – Corpo Humano</h1>
+
     <div class="registration-box">
       <div class="input-group">
-        <label>Nome do Explorador:</label>
-        <input type="text" id="userName" placeholder="Escreve o teu nome..." oninput="validateRegistration()">
+        <label>Nome do Aluno:</label>
+        <input type="text" id="userName" placeholder="Escreva seu nome..." oninput="validateRegistration()">
       </div>
       <div class="input-group">
         <label>Turma:</label>
         <input type="text" id="userClass" placeholder="Ex: 5º A" oninput="validateRegistration()">
       </div>
-      <p id="regHint" style="font-size: 13px; color: #fb7185; text-align: center;">Preenche os dados para desbloquear as missões.</p>
+      <p id="regHint" style="font-size: 13px; color: #fb7185; text-align: center;">
+        Preenche os dados para desbloquear as missões.
+      </p>
+
+      <button class="btn btn-gold" type="button" onclick="exportPDF_All()">
+        📄 Exportar cartas em PDF (para recortar)
+      </button>
     </div>
 
     <div class="menu-grid" id="menuGrid">
       <div class="phase-card" onclick="startGame(0)">
-        <span class="phase-icon">🧠</span>
+        <img src="simao-fase1.png" class="phase-icon-img" alt="Simão Fase 1">
         <h3>Fase 1</h3>
-        <h2 id="faseTitulo">Fase 1 – Órgãos Vitais para o Funcionamento do Corpo no Dia a Dia</h2>
-
-<p class="fase-ancora">
-  Nesta atividade, consideram-se órgãos vitais aqueles que participam diretamente do funcionamento do corpo humano no dia a dia, de forma acessível e significativa para estudantes da educação especial.
-</p>
-
+        <h2>Fase 1 – Órgãos Vitais para o Funcionamento do Corpo no Dia a Dia</h2>
+        <p class="fase-ancora">
+          Nesta atividade, são considerados órgãos vitais aqueles que ajudam o corpo humano a funcionar no dia a dia,
+          de forma acessível e significativa para estudantes da educação especial.
+        </p>
       </div>
+
       <div class="phase-card" onclick="startGame(1)">
-        <span class="phase-icon">👅</span>
+        <img src="simao-fase2.png" class="phase-icon-img" alt="Simão Fase 2">
         <h3>Fase 2</h3>
-        <h2 id="faseTitulo">Fase 2 – Sentidos e Partes do Corpo</h2>
-
-<p class="fase-ancora">
-  Nesta atividade, os conteúdos abordam os sentidos humanos e partes do corpo relacionadas às funções do dia a dia, de forma acessível e significativa para estudantes da educação especial.
-</p>
-
+        <h2>Fase 2 – Sentidos e Partes do Corpo</h2>
+        <p class="fase-ancora">
+          Nesta atividade, os conteúdos abordam os sentidos humanos e partes do corpo relacionadas às funções do dia a dia,
+          de forma acessível e significativa para estudantes da educação especial.
+        </p>
       </div>
-      <div class="phase-card" onclick="startGame(2)">
-        <span class="phase-icon">🦴</span>
-        <h3>Fase 3</h3>
-        <h3>Fase 3</h3>
-<h2>Fase 3 – Estruturas de Apoio e Movimento</h2>
-<p class="fase-ancora">
-  Nesta atividade, exploramos estruturas que ajudam o corpo a ficar firme, mover-se e proteger órgãos importantes, de forma acessível e significativa para estudantes da educação especial.
-</p>
 
+      <div class="phase-card" onclick="startGame(2)">
+        <img src="simao-fase3.png" class="phase-icon-img" alt="Simão Fase 3">
+        <h3>Fase 3</h3>
+        <h2>Fase 3 – Estruturas de Apoio e Movimento</h2>
+        <p class="fase-ancora">
+          Nesta atividade, exploramos estruturas que ajudam o corpo a ficar firme, mover-se e proteger órgãos importantes,
+          de forma acessível e significativa para estudantes da educação especial.
+        </p>
       </div>
     </div>
   </div>
@@ -236,14 +351,15 @@
   <!-- GAME -->
   <div id="gameScreen">
     <div style="display: flex; justify-content: space-between; width: 100%; max-width: 650px; margin-bottom: 15px; align-items: center;">
-        <button class="btn btn-outline" style="width: auto; margin:0;" onclick="location.reload()">⬅️ Sair</button>
-        <button id="soundToggleBtn" class="sound-toggle" onclick="toggleSound()">
-          <span id="soundIcon">🔊</span> Som: Ligado
-        </button>
-        <div style="background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px;">
-            Pares: <span id="pairCount">0</span> / 8
-        </div>
+      <button class="btn btn-outline" style="width: auto; margin:0;" onclick="location.reload()">⬅️ Sair</button>
+      <button id="soundToggleBtn" class="sound-toggle" onclick="toggleSound()">
+        <span id="soundIcon">🔊</span> Som: Ligado
+      </button>
+      <div style="background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px;">
+        Pares: <span id="pairCount">0</span> / 8
+      </div>
     </div>
+
     <h2 id="currentLevelTitle" style="margin-bottom: 20px;">Fase 1</h2>
     <div class="grid" id="grid"></div>
   </div>
@@ -251,29 +367,36 @@
   <!-- CERTIFICATE -->
   <div id="certScreen">
     <div class="certificate-container" id="printableArea">
-        <div style="border: 2px solid #d4af37; padding: 30px;">
-            <div class="cert-title">CERTIFICADO DE EXPLORADOR</div>
-            <p style="text-transform: uppercase; letter-spacing: 2px; color: #64748b;">Ciências Naturais</p>
-            <p style="font-size: 20px; margin-top: 30px;">Certificamos que o(a) aluno(a):</p>
-            <div class="cert-name" id="certName">NOME DO ALUNO</div>
-            <p style="font-size: 18px;">Concluiu com êxito a <b>Operação Memória Humana</b>,<br> demonstrando domínio sobre o funcionamento do corpo.</p>
-            <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center;">
-                <span id="certDate">00/00/0000</span>
-                <span style="font-size: 60px;">🏆</span>
-                <div style="border-top: 1px solid #000; width: 150px; font-size: 12px;">Professor(a)</div>
-            </div>
+      <div style="border: 2px solid #d4af37; padding: 30px;">
+        <div class="cert-title">CERTIFICADO DE CONCLUSÃO</div>
+
+        <p style="text-transform: uppercase; letter-spacing: 2px; color: #64748b;">Ciências Naturais</p>
+        <p style="font-size: 20px; margin-top: 30px;">Certificamos que o(a) aluno(a):</p>
+        <div class="cert-name" id="certName">NOME DO ALUNO</div>
+
+        <p style="font-size: 18px;">
+          Concluiu com êxito a <b>Memória do Simão – Corpo Humano</b>,<br>
+          demonstrando conhecimentos sobre o corpo humano.
+        </p>
+
+        <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center;">
+          <span id="certDate">00/00/0000</span>
+          <span style="font-size: 60px;">🏆</span>
+          <div style="border-top: 1px solid #000; width: 150px; font-size: 12px;">Professor(a)</div>
         </div>
+      </div>
     </div>
+
     <div class="no-print" style="display: flex; gap: 10px; width: 100%; max-width: 400px;">
-        <button class="btn" style="background: #22c55e;" onclick="window.print()">🖨️ Imprimir Certificado</button>
-        <button class="btn btn-outline" onclick="location.reload()">Voltar ao Início</button>
+      <button class="btn" style="background: #22c55e;" onclick="printCertificate()">🖨️ Imprimir Certificado</button>
+      <button class="btn btn-outline" onclick="location.reload()">Voltar ao Início</button>
     </div>
   </div>
 
   <!-- MODALS -->
   <div class="modal" id="infoModal">
     <div class="modal-content">
-      <div id="infoEmoji" style="font-size: 60px;"></div>
+      <img id="infoImage" src="" alt="" style="width: 120px; max-height: 120px; object-fit: contain; margin-bottom: 15px;">
       <h2 id="infoTitle" style="color: #60a5fa;"></h2>
       <p id="infoText" style="font-size: 18px; line-height: 1.6; margin: 20px 0;"></p>
       <button class="btn" onclick="closeInfo()">Continuar Missão</button>
@@ -291,220 +414,303 @@
     </div>
   </div>
 
-<script>
-  const LEVELS = [
-    { title: "Fase 1: Órgãos Vitais para o Funcionamento do Corpo no Dia a Dia", data: [
-        { id: 1, label: "Cérebro", emoji: "🧠", info: "O cérebro é o mestre do corpo! Ele processa informação e envia ordens para todos os órgãos." },
-        { id: 2, label: "Coração", emoji: "❤️", info: "O coração é um músculo forte que bombeia sangue rico em oxigénio para todo o corpo." },
-        { id: 3, label: "Pulmões", emoji: "🫁", info: "Os pulmões permitem-nos respirar, trocando o oxigénio pelo dióxido de carbono." },
-        { id: 4, label: "Estômago", emoji: "🥣", info: "No estômago, os alimentos são misturados com sucos para começar a digestão." },
-        { id: 5, label: "Fígado", emoji: "🛡️", info: "O fígado ajuda a limpar o sangue e armazena energia para quando precisamos." },
-        { id: 6, label: "Rins", emoji: "💧", info: "Os rins funcionam como filtros que removem as impurezas do nosso sangue." },
-        { id: 7, label: "Intestinos", emoji: "🌀", info: "Os intestinos absorvem os nutrientes da comida que o corpo utiliza para crescer." },
-        { id: 8, label: "Bexiga", emoji: "🎈", info: "A bexiga armazena a urina até que o corpo esteja pronto para a eliminar." }
-    ]},
-    { title: "Fase 2: Sentidos e Partes do Corpo", data: [
-        { id: 9, label: "Olhos", emoji: "👁️", info: "A visão permite-nos ver cores, formas e a distância das coisas ao nosso redor." },
-        { id: 10, label: "Ouvidos", emoji: "👂", info: "O ouvido capta vibrações do ar para que possamos ouvir sons e música." },
-        { id: 11, label: "Nariz", emoji: "👃", info: "O olfato ajuda-nos a sentir cheiros e também é muito importante para o paladar." },
-        { id: 12, label: "Língua", emoji: "👅", info: "A língua tem papilas gustativas que identificam os sabores: doce, salgado, azedo e amargo." },
-        { id: 13, label: "Pele", emoji: "✋", info: "A pele é o maior órgão do corpo e permite-nos sentir o toque, o calor e o frio." },
-        { id: 14, label: "Dentes", emoji: "🦷", info: "Os dentes cortam e trituram os alimentos para facilitar o trabalho do estômago." },
-        { id: 15, label: "Sangue", emoji: "🩸", info: "O sangue viaja por todo o corpo transportando oxigénio e nutrientes." },
-        { id: 16, label: "Artérias", emoji: "〰️", info: "As artérias são os 'tubos' que levam o sangue do coração para o resto do corpo." }
-    ]},
-    { title: "Fase 3: Estruturas de Apoio e Movimento", data: [
-        { id: 17, label: "Esqueleto", emoji: "💀", info: "O esqueleto humano dá suporte ao corpo e protege órgãos delicados como o cérebro." },
-        { id: 18, label: "Músculos", emoji: "💪", info: "Existem centenas de músculos que se contraem para nos permitir correr, saltar e sorrir." },
-        { id: 19, label: "Costelas", emoji: "🦴", info: "As costelas formam uma 'caixa' protetora ao redor do coração e dos pulmões." },
-        { id: 20, label: "Coluna", emoji: "🦒", info: "A coluna vertebral mantém-nos direitos e protege a medula nervosa." },
-        { id: 21, label: "Crânio", emoji: "👤", info: "O crânio é um osso muito resistente que serve de capacete natural para o cérebro." },
-        { id: 22, label: "Articulações", emoji: "🦾", info: "As articulações (como joelhos e cotovelos) permitem que os nossos ossos se dobrem." },
-        { id: 23, label: "Fémur", emoji: "🍗", info: "O fémur é o osso mais longo e forte do corpo humano, localizado na coxa." },
-        { id: 24, label: "Tendões", emoji: "🧵", info: "Os tendões ligam os músculos aos ossos, permitindo o movimento das alavancas do corpo." }
-    ]}
-  ];
+  <!-- ÁREA OCULTA PARA EXPORTAÇÃO EM PDF -->
+  <div id="printArea"></div>
 
-  let currentLevelIdx = 0;
-  let matches = 0;
-  let flipped = [];
-  let locked = false;
-  let soundEnabled = true;
+  <script>
+    const LEVELS = [
+      { title: "Fase 1: Órgãos Vitais para o Funcionamento do Corpo no Dia a Dia", data: [
+          { id: 1, label: "Cérebro", img: "cerebro.png", info: "O cérebro é o mestre do corpo! Ele processa informação e envia ordens para todos os órgãos." },
+          { id: 2, label: "Coração", img: "coracao.png", info: "O coração é um músculo forte que bombeia sangue rico em oxigênio para todo o corpo." },
+          { id: 3, label: "Pulmões", img: "pulmoes.png", info: "Os pulmões nos permitem respirar, trocando o oxigênio pelo gás carbônico." },
+          { id: 4, label: "Estômago", img: "estomago.png", info: "No estômago, os alimentos são misturados com sucos gástricos para começar a digestão." },
+          { id: 5, label: "Fígado", img: "figado.png", info: "O fígado ajuda a limpar o sangue e armazena energia para quando precisamos." },
+          { id: 6, label: "Rins", img: "rins.png", info: "Os rins funcionam como filtros que removem as impurezas do nosso sangue." },
+          { id: 7, label: "Intestinos", img: "intestinos.png", info: "Os intestinos absorvem os nutrientes da comida que o corpo utiliza para crescer." },
+          { id: 8, label: "Bexiga", img: "bexiga.png", info: "A bexiga armazena a urina até que o corpo esteja pronto para eliminar." }
+      ]},
+      { title: "Fase 2: Sentidos e Partes do Corpo", data: [
+          { id: 9,  label: "Olhos", img: "olhos.png", info: "A visão nos permite ver cores, formas e a distância das coisas ao nosso redor." },
+          { id: 10, label: "Ouvidos", img: "ouvidos.png", info: "O ouvido capta vibrações do ar para que possamos ouvir sons e música." },
+          { id: 11, label: "Nariz", img: "nariz.png", info: "O olfato nos ajuda a sentir cheiros e também é muito importante para o paladar." },
+          { id: 12, label: "Língua", img: "lingua.png", info: "A língua tem papilas gustativas que identificam os sabores: doce, salgado, azedo e amargo." },
+          { id: 13, label: "Pele", img: "pele.png", info: "A pele é o maior órgão do corpo e nos permite sentir o toque, o calor e o frio." },
+          { id: 14, label: "Dentes", img: "dentes.png", info: "Os dentes cortam e trituram os alimentos para facilitar o trabalho do estômago." },
+          { id: 15, label: "Sangue", img: "sangue.png", info: "O sangue viaja por todo o corpo transportando oxigênio e nutrientes." },
+          { id: 16, label: "Artérias", img: "arterias.png", info: "As artérias são os 'tubos' que levam o sangue do coração para o resto do corpo." }
+      ]},
+      { title: "Fase 3: Estruturas de Apoio e Movimento", data: [
+          { id: 17, label: "Esqueleto", img: "esqueleto.png", info: "O esqueleto humano dá suporte ao corpo e protege órgãos delicados como o cérebro." },
+          { id: 18, label: "Músculos", img: "musculo.png", info: "Existem centenas de músculos que se contraem para nos permitir correr, saltar e sorrir." },
+          { id: 19, label: "Costelas", img: "costelas.png", info: "As costelas formam uma 'caixa' protetora ao redor do coração e dos pulmões." },
+          { id: 20, label: "Coluna", img: "coluna.png", info: "A coluna vertebral nos mantém eretos e protege a medula nervosa." },
+          { id: 21, label: "Crânio", img: "cranio.png", info: "O crânio é um osso muito resistente que serve de capacete natural para o cérebro." },
+          { id: 22, label: "Articulações", img: "articulacoes.png", info: "As articulações (como joelhos e cotovelos) permitem que os nossos ossos se dobrem." },
+          { id: 23, label: "Fêmur", img: "femur.png", info: "O fêmur é o osso mais longo e forte do corpo humano, localizado na coxa." },
+          { id: 24, label: "Tendões", img: "tendoes.png", info: "Os tendões ligam os músculos aos ossos, permitindo o movimento de flexões e extensões dos membros e articulações do corpo." }
+      ]}
+    ];
 
-  // Sound Logic
-  function speak(text) {
-    if (!soundEnabled) return;
-    window.speechSynthesis.cancel(); // Stop current speech
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
+    let currentLevelIdx = 0;
+    let matches = 0;
+    let flipped = [];
+    let locked = false;
+    let soundEnabled = true;
 
-    utterance.rate = 1.0;
-    window.speechSynthesis.speak(utterance);
-  }
-
-  window.toggleSound = function() {
-    soundEnabled = !soundEnabled;
-    const icon = document.getElementById('soundIcon');
-    const btn = document.getElementById('soundToggleBtn');
-    if (soundEnabled) {
-      icon.textContent = "🔊";
-      btn.innerHTML = `<span id="soundIcon">🔊</span> Som: Ligado`;
-      speak("Som ligado");
-    } else {
-      icon.textContent = "🔈";
-      btn.innerHTML = `<span id="soundIcon">🔈</span> Som: Desligado`;
+    function speak(text) {
+      if (!soundEnabled) return;
       window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'pt-BR';
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
     }
-  };
 
-  window.validateRegistration = function() {
-    const name = document.getElementById('userName').value.trim();
-    const uClass = document.getElementById('userClass').value.trim();
-    const grid = document.getElementById('menuGrid');
-    const hint = document.getElementById('regHint');
-
-    if (name.length >= 3 && uClass.length >= 1) {
-      grid.classList.add('active');
-      hint.style.color = "#4ade80";
-      hint.innerHTML = "✅ Estás pronto! Escolhe uma fase.";
-    } else {
-      grid.classList.remove('active');
-      hint.style.color = "#fb7185";
-      hint.innerHTML = "Preenche os dados para desbloquear as missões.";
-    }
-  };
-function enterFullscreen() {
-  const el = document.documentElement;
-
-  if (el.requestFullscreen) {
-    el.requestFullscreen();
-  } else if (el.webkitRequestFullscreen) {
-    el.webkitRequestFullscreen(); // Safari
-  } else if (el.msRequestFullscreen) {
-    el.msRequestFullscreen(); // IE
-  }
-}
-
-  window.startGame = function(idx) {
-  enterFullscreen(); // <-- AQUI
-  currentLevelIdx = idx;
-  document.getElementById('menuScreen').style.display = 'none';
-  document.getElementById('gameScreen').style.display = 'flex';
-  speak("Iniciando a " + LEVELS[idx].title);
-  resetBoard();
-};
-
-
-  function resetBoard() {
-    matches = 0;
-    flipped = [];
-    locked = false;
-    document.getElementById('pairCount').textContent = '0';
-    document.getElementById('currentLevelTitle').textContent = LEVELS[currentLevelIdx].title;
-    
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    
-    const levelData = LEVELS[currentLevelIdx].data;
-    const deck = [...levelData, ...levelData].sort(() => Math.random() - 0.5);
-
-    deck.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="inner">
-          <div class="face back"></div>
-          <div class="face front">
-            <div class="card-img">${item.emoji}</div>
-            <div class="card-label">${item.label}</div>
-          </div>
-        </div>`;
-      card.onclick = () => handleFlip(card, item);
-      grid.appendChild(card);
-    });
-  }
-
-  function handleFlip(card, item) {
-    if (locked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
-    
-    card.classList.add('flipped');
-    speak(item.label);
-    flipped.push({ card, item });
-
-    if (flipped.length === 2) {
-      locked = true;
-      if (flipped[0].item.id === flipped[1].item.id) {
-        matches++;
-        document.getElementById('pairCount').textContent = matches;
-        flipped[0].card.classList.add('matched');
-        flipped[1].card.classList.add('matched');
-        
-        setTimeout(() => {
-          showInfo(flipped[0].item);
-          flipped = [];
-          locked = false;
-        }, 500);
+    window.toggleSound = function() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundToggleBtn');
+      if (soundEnabled) {
+        btn.innerHTML = `<span id="soundIcon">🔊</span> Som: Ligado`;
+        speak("Som ligado");
       } else {
-        setTimeout(() => {
-          flipped[0].card.classList.remove('flipped');
-          flipped[1].card.classList.remove('flipped');
-          flipped = [];
-          locked = false;
-        }, 1000);
+        btn.innerHTML = `<span id="soundIcon">🔈</span> Som: Desligado`;
+        window.speechSynthesis.cancel();
+      }
+    };
+
+    window.validateRegistration = function() {
+      const name = document.getElementById('userName').value.trim();
+      const uClass = document.getElementById('userClass').value.trim();
+      const grid = document.getElementById('menuGrid');
+      const hint = document.getElementById('regHint');
+
+      if (name.length >= 3 && uClass.length >= 1) {
+        grid.classList.add('active');
+        hint.style.color = "#4ade80";
+        hint.innerHTML = "✅ Você está pronto! Escolha uma fase.";
+      } else {
+        grid.classList.remove('active');
+        hint.style.color = "#fb7185";
+        hint.innerHTML = "Preenche os dados para desbloquear as missões.";
+      }
+    };
+
+    function enterFullscreen() {
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    }
+
+    window.startGame = function(idx) {
+      enterFullscreen();
+      currentLevelIdx = idx;
+      document.getElementById('menuScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'flex';
+      speak("Iniciando a " + LEVELS[idx].title);
+      resetBoard();
+    };
+
+    function resetBoard() {
+      matches = 0;
+      flipped = [];
+      locked = false;
+      document.getElementById('pairCount').textContent = '0';
+      document.getElementById('currentLevelTitle').textContent = LEVELS[currentLevelIdx].title;
+
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+
+      const levelData = LEVELS[currentLevelIdx].data;
+      const deck = [...levelData, ...levelData].sort(() => Math.random() - 0.5);
+
+      deck.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="inner">
+            <div class="face back"></div>
+            <div class="face front">
+              <img class="card-photo" src="${item.img}" alt="${item.label}">
+              <div class="card-label">${item.label}</div>
+            </div>
+          </div>`;
+        card.onclick = () => handleFlip(card, item);
+        grid.appendChild(card);
+      });
+    }
+
+    function handleFlip(card, item) {
+      if (locked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+      card.classList.add('flipped');
+      speak(item.label);
+      flipped.push({ card, item });
+
+      if (flipped.length === 2) {
+        locked = true;
+
+        if (flipped[0].item.id === flipped[1].item.id) {
+          matches++;
+          document.getElementById('pairCount').textContent = matches;
+          flipped[0].card.classList.add('matched');
+          flipped[1].card.classList.add('matched');
+
+          setTimeout(() => {
+            showInfo(flipped[0].item);
+            flipped = [];
+            locked = false;
+          }, 500);
+        } else {
+          setTimeout(() => {
+            flipped[0].card.classList.remove('flipped');
+            flipped[1].card.classList.remove('flipped');
+            flipped = [];
+            locked = false;
+          }, 1000);
+        }
       }
     }
-  }
 
-  function showInfo(item) {
-    document.getElementById('infoEmoji').textContent = item.emoji;
-    document.getElementById('infoTitle').textContent = item.label;
-    document.getElementById('infoText').textContent = item.info;
-    document.getElementById('infoModal').classList.add('show');
-    speak(item.info);
-  }
+    function showInfo(item) {
+      const infoImg = document.getElementById('infoImage');
+      infoImg.src = item.img;
+      infoImg.alt = item.label;
 
-  window.closeInfo = function() {
-    window.speechSynthesis.cancel();
-    document.getElementById('infoModal').classList.remove('show');
-    if (matches === 8) showWin();
-  }
+      document.getElementById('infoTitle').textContent = item.label;
+      document.getElementById('infoText').textContent = item.info;
 
-  function showWin() {
-    const isFinal = currentLevelIdx === 2;
-    document.getElementById('winHeading').textContent = isFinal ? "PARABÉNS, EXPLORADOR!" : "Missão Cumprida!";
-    document.getElementById('winMessage').textContent = isFinal 
-        ? "Completaste as 3 fases da Operação Memória Humana com distinção."
-        : "Estás quase lá! Falta pouco para o certificado final.";
-    
-    document.getElementById('nextPhaseBtn').style.display = isFinal ? "none" : "block";
-    document.getElementById('getCertBtn').style.display = isFinal ? "block" : "none";
-    document.getElementById('winModal').classList.add('show');
-    
-    if (isFinal) {
-      speak("Parabéns, explorador! Completaste todas as fases. Podes agora obter o teu certificado.");
-    } else {
-      speak("Missão cumprida! Vamos para a próxima fase?");
+      document.getElementById('infoModal').classList.add('show');
+      speak(item.info);
     }
-  }
 
-  window.nextPhase = function() {
-    currentLevelIdx++;
-    document.getElementById('winModal').classList.remove('show');
-    speak("Iniciando a " + LEVELS[currentLevelIdx].title);
-    resetBoard();
-  }
+    window.closeInfo = function() {
+      window.speechSynthesis.cancel();
+      document.getElementById('infoModal').classList.remove('show');
+      if (matches === 8) showWin();
+    };
 
-  window.showFinalCertificate = function() {
-    document.getElementById('winModal').classList.remove('show');
-    document.getElementById('gameScreen').style.display = 'none';
-    document.getElementById('certScreen').style.display = 'flex';
-    
-    const name = document.getElementById('userName').value;
-    document.getElementById('certName').textContent = name;
-    document.getElementById('certDate').textContent = new Date().toLocaleDateString('pt-PT');
-    
-    speak("Aqui está o teu certificado, " + name + ". Bom trabalho!");
-  }
-</script>
+    function showWin() {
+      const isFinal = currentLevelIdx === 2;
+      document.getElementById('winHeading').textContent = isFinal ? "PARABÉNS, EXPLORADOR!" : "Missão Cumprida!";
+      document.getElementById('winMessage').textContent = isFinal
+        ? "Você completou as 3 fases da Memória do Simão – Corpo Humano com distinção."
+        : "Está quase lá! Falta pouco para o certificado final.";
+
+      document.getElementById('nextPhaseBtn').style.display = isFinal ? "none" : "block";
+      document.getElementById('getCertBtn').style.display = isFinal ? "block" : "none";
+      document.getElementById('winModal').classList.add('show');
+
+      if (isFinal) speak("Parabéns! Você completou todas as fases da Memória do Simão. Agora você pode obter seu certificado.");
+      else speak("Missão cumprida! Vamos para a próxima fase?");
+    }
+
+    window.nextPhase = function() {
+      currentLevelIdx++;
+      document.getElementById('winModal').classList.remove('show');
+      speak("Iniciando a " + LEVELS[currentLevelIdx].title);
+      resetBoard();
+    };
+
+    window.showFinalCertificate = function() {
+      document.getElementById('winModal').classList.remove('show');
+      document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('certScreen').style.display = 'flex';
+
+      const name = document.getElementById('userName').value;
+      document.getElementById('certName').textContent = name;
+      document.getElementById('certDate').textContent = new Date().toLocaleDateString('pt-BR');
+
+      speak("Aqui está o seu certificado, " + name + ". Bom trabalho!");
+    };
+
+    // ======= PRINT: CERTIFICADO =======
+    window.printCertificate = function(){
+      document.body.classList.remove("print-mode-cards");
+      document.body.classList.add("print-mode-cert");
+      window.print();
+      setTimeout(() => document.body.classList.remove("print-mode-cert"), 300);
+    };
+
+    // ======= EXPORTAÇÃO PDF (CARTAS) =======
+    function buildSheet(title, cardsHTML){
+      return `
+        <div class="sheet">
+          <div class="print-title">${title}</div>
+          <div class="print-grid">
+            ${cardsHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    function makeFrontCards(levelIdx){
+      const data = LEVELS[levelIdx].data;
+      const deck = [...data, ...data]; // 16
+      return deck.map(item => `
+        <div class="print-card">
+          <div class="print-card-front">
+            <img src="${item.img}" alt="${item.label}">
+            <div class="lbl">${item.label}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function makeBackCards(backImg){
+      const total = 16;
+      let html = "";
+      for (let i = 0; i < total; i++){
+        html += `
+          <div class="print-card print-back">
+            <img src="${backImg}" alt="Verso da carta">
+          </div>
+        `;
+      }
+      return html;
+    }
+
+    function waitImagesLoaded(container){
+      const imgs = Array.from(container.querySelectorAll("img"));
+      const promises = imgs.map(img => new Promise(resolve => {
+        if (img.complete && img.naturalWidth > 0) return resolve(true);
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+      }));
+      return Promise.all(promises);
+    }
+
+    window.exportPDF_All = async function(){
+      const printArea = document.getElementById("printArea");
+      printArea.style.display = "block";
+
+      // ativa modo CARTAS
+      document.body.classList.remove("print-mode-cert");
+      document.body.classList.add("print-mode-cards");
+
+      const back1 = "capa-carta-corpo.png";
+      const back2 = "capa-carta-corpo.png";
+      const back3 = "capa-carta-corpo.png";
+
+      let html = "";
+      html += buildSheet("FRENTES — Fase 1", makeFrontCards(0));
+      html += buildSheet("VERSOS — Fase 1", makeBackCards(back1));
+      html += buildSheet("FRENTES — Fase 2", makeFrontCards(1));
+      html += buildSheet("VERSOS — Fase 2", makeBackCards(back2));
+      html += buildSheet("FRENTES — Fase 3", makeFrontCards(2));
+      html += buildSheet("VERSOS — Fase 3", makeBackCards(back3));
+
+      printArea.innerHTML = html;
+
+      await waitImagesLoaded(printArea);
+      window.print();
+
+      setTimeout(() => {
+        printArea.innerHTML = "";
+        printArea.style.display = "none";
+        document.body.classList.remove("print-mode-cards");
+      }, 800);
+    };
+  </script>
 </body>
 </html>
